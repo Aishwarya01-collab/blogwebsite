@@ -9,82 +9,52 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        base: "#07120D",
-        surface: "#0D1F16",
-        "surface-raised": "#123524",
-        "green-loki": "#1F6B45",
-        "green-bright": "#48D597",
-        gold: "#C7A94A",
-        "gold-muted": "#8B7230",
-        "text-primary": "#E8F0E9",
-        "text-muted": "#91A59A",
-        border: "#244634",
-        "border-bright": "#1F6B45",
+        tva: {
+          base: "#050A07",
+          surface: "#09140E",
+          deep: "#102A1C",
+          emerald: "#1D6B45",
+          bright: "#3BE58B",
+          olive: "#39452A",
+          amber: "#C49A45",
+          gold: "#E0BD65",
+          text: "#E9EFE9",
+          muted: "#91A096",
+          border: "#263F30",
+        }
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         display: ["var(--font-cinzel)", "serif"],
-        mono: ["var(--font-jetbrains)", "monospace"],
+        sans: ["var(--font-inter)", "sans-serif"],
+        mono: ["var(--font-space-mono)", "monospace"],
       },
       backgroundImage: {
-        "radial-green":
-          "radial-gradient(ellipse at center, #1F6B4520 0%, transparent 70%)",
-        "radial-gold":
-          "radial-gradient(ellipse at center, #C7A94A15 0%, transparent 70%)",
-        "hero-gradient":
-          "linear-gradient(135deg, #07120D 0%, #0D1F16 50%, #07120D 100%)",
-        "card-gradient": "linear-gradient(135deg, #0D1F16 0%, #123524 100%)",
-      },
-      boxShadow: {
-        "glow-green":
-          "0 0 20px rgba(72, 213, 151, 0.15), 0 0 60px rgba(31, 107, 69, 0.1)",
-        "glow-gold":
-          "0 0 20px rgba(199, 169, 74, 0.2), 0 0 60px rgba(199, 169, 74, 0.05)",
-        card: "0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(72,213,151,0.05)",
-        "card-hover":
-          "0 8px 40px rgba(0,0,0,0.6), 0 0 30px rgba(31,107,69,0.2), inset 0 1px 0 rgba(72,213,151,0.1)",
-      },
-      keyframes: {
-        "fade-in": {
-          "0%": { opacity: "0", transform: "translateY(12px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        "fade-in-up": {
-          "0%": { opacity: "0", transform: "translateY(24px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        "glow-pulse": {
-          "0%, 100%": { opacity: "0.4" },
-          "50%": { opacity: "0.9" },
-        },
-        float: {
-          "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
-        "border-flow": {
-          "0%": { backgroundPosition: "0% 50%" },
-          "50%": { backgroundPosition: "100% 50%" },
-          "100%": { backgroundPosition: "0% 50%" },
-        },
-        shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
-        rotate: {
-          "0%": { transform: "rotate(0deg)" },
-          "100%": { transform: "rotate(360deg)" },
-        },
+        "radial-emerald": "radial-gradient(circle at center, rgba(29, 107, 69, 0.15) 0%, transparent 70%)",
+        "radial-amber": "radial-gradient(circle at center, rgba(196, 154, 69, 0.1) 0%, transparent 70%)",
       },
       animation: {
-        "fade-in": "fade-in 0.6s ease-out forwards",
-        "fade-in-slow": "fade-in 1s ease-out forwards",
-        "fade-in-up": "fade-in-up 0.7s ease-out forwards",
-        "glow-pulse": "glow-pulse 3s ease-in-out infinite",
-        float: "float 5s ease-in-out infinite",
-        "border-flow": "border-flow 4s ease infinite",
-        shimmer: "shimmer 2.5s linear infinite",
-        "spin-slow": "rotate 12s linear infinite",
+        "scanline": "scanline 8s linear infinite",
+        "glow-pulse": "glow-pulse 4s ease-in-out infinite alternate",
+        "float": "float 10s ease-in-out infinite alternate",
       },
+      keyframes: {
+        scanline: {
+          "0%": { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(100vh)" }
+        },
+        "glow-pulse": {
+          "0%": { opacity: "0.3" },
+          "100%": { opacity: "0.8" }
+        },
+        float: {
+          "0%": { transform: "translateY(0px) translateX(0px)" },
+          "100%": { transform: "translateY(-20px) translateX(10px)" }
+        },
+        scanWidth: {
+          "0%, 100%": { width: "0%" },
+          "50%": { width: "100%" }
+        }
+      }
     },
   },
   plugins: [],

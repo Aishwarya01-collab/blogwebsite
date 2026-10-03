@@ -43,7 +43,8 @@ export async function registerAction(formData: FormData): Promise<void> {
   };
   await session.save();
 
-  redirect("/");
+  // Redirect to cinematic sequence instead of home
+  redirect("/welcome?new=true");
 }
 
 export async function loginAction(formData: FormData): Promise<void> {

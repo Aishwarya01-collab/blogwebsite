@@ -1,83 +1,67 @@
-export const dynamic = "force-dynamic";
+"use client";
 
-import Link from "next/link";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import { prisma } from "@/lib/prisma";
+import { motion } from "framer-motion";
+import { TopicTimelineCard } from "@/components/topics/TopicTimelineCard";
 
-export const metadata = {
-  title: "Topics",
-  description: "Explore thoughts by category.",
-};
+const TIMELINES = [
+  { number: "01", title: "Technology", slug: "technology", count: 12 },
+  { number: "02", title: "Artificial Intelligence", slug: "ai", count: 8 },
+  { number: "03", title: "Systems", slug: "systems", count: 15 },
+  { number: "04", title: "Programming", slug: "programming", count: 24 },
+  { number: "05", title: "Learning", slug: "learning", count: 6 },
+  { number: "06", title: "Thoughts", slug: "thoughts", count: 19 },
+];
 
-export default async function TopicsPage() {
-  const categories = await prisma.category.findMany({
-    orderBy: { name: "asc" },
-    include: {
-      _count: {
-        select: { posts: { where: { published: true } } },
-      },
-    },
-  });
-
+export default function TopicsPage() {
   return (
-    <>
-      <Navbar />
-      <main className="pt-32 pb-24 min-h-screen">
-        <div className="container-site">
-          
-          <div className="mb-16 md:mb-24 text-center">
-            <h1 className="font-display text-5xl md:text-7xl font-black text-text-primary mb-6 uppercase tracking-tight">
-              Explore <span className="text-gradient-green">Topics</span>
-            </h1>
-            <p className="text-text-muted text-lg max-w-2xl mx-auto">
-              Navigate the digital universe by subject. Select a node to view its connected thoughts.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {categories.map((topic) => (
-              <Link 
-                key={topic.id}
-                href={`/topics/${topic.slug}`}
-                className="group relative overflow-hidden glass-card rounded-sm p-8 border-border hover:border-green-bright/50 transition-all duration-500 hover:-translate-y-1 flex flex-col items-center text-center hover:shadow-glow-green/20"
-              >
-                {/* Background glow on hover */}
-                <div className="absolute inset-0 bg-radial-green opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                
-                {/* Category Icon Placeholder */}
-                <div className="w-16 h-16 rounded-sm border border-border bg-surface-raised flex items-center justify-center mb-6 group-hover:border-green-bright/40 transition-colors duration-500 relative z-10">
-                  <span className="text-green-bright/60 group-hover:text-green-bright font-display text-2xl transition-colors duration-500">
-                    ◈
-                  </span>
-                </div>
-
-                <h2 className="font-display text-2xl font-bold text-text-primary mb-3 relative z-10">
-                  {topic.name}
-                </h2>
-                
-                <p className="text-text-muted text-sm mb-6 relative z-10 group-hover:text-text-secondary transition-colors duration-300">
-                  {topic._count.posts} {topic._count.posts === 1 ? 'article' : 'articles'} published.
-                </p>
-
-                <div className="mt-auto relative z-10 w-full pt-4 border-t border-border group-hover:border-green-bright/20 transition-colors duration-500">
-                  <span className="text-[10px] font-mono tracking-widest uppercase text-text-muted/60 group-hover:text-green-bright transition-colors duration-300">
-                    Enter Sector <span aria-hidden="true" className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          {categories.length === 0 && (
-            <div className="text-center text-text-muted italic">
-              No topics created yet.
+    <main className="min-h-screen pt-32 pb-24 px-4 sm:px-6 relative">
+      <div className="container-site max-w-5xl mx-auto relative z-10">
+        
+        {/* Header Sequence */}
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-tva-border/50 pb-8"
+        >
+          <div>
+            <div className="flex items-center gap-4 mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-tva-amber animate-pulse" />
+              <span className="font-mono text-[10px] tracking-[0.3em] text-tva-amber uppercase">
+                System Scan Complete
+              </span>
             </div>
-          )}
+            <h1 className="font-display text-4xl md:text-6xl text-tva-text font-black tracking-tight uppercase drop-shadow-md">
+              Known Timelines
+            </h1>
+          </div>
 
+          <div className="font-mono text-[10px] tracking-[0.2em] text-tva-muted uppercase text-left md:text-right">
+            <p>TOTAL BRANCHES IDENTIFIED: <span className="text-tva-bright">84</span></p>
+            <p>STATUS: <span className="text-tva-emerald">EXPANDING</span></p>
+          </div>
+        </motion.div>
+
+        {/* Timelines List */}
+        <div className="flex flex-col border-t border-tva-border/30">
+          {TIMELINES.map((timeline, index) => (
+            <motion.div
+              key={timeline.slug}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
+            >
+              <TopicTimelineCard {...timeline} />
+            </motion.div>
+          ))}
         </div>
-      </main>
-      <Footer />
-    </>
+
+      </div>
+      
+      {/* Background Decorative Geometry */}
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/3 w-[800px] h-[800px] rounded-full border border-tva-emerald/5 opacity-50 pointer-events-none" />
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] rounded-full border border-tva-amber/5 opacity-50 pointer-events-none" />
+      
+    </main>
   );
 }

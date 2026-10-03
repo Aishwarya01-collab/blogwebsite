@@ -1,171 +1,166 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
+import { GlowButton } from "@/components/ui/GlowButton";
+import TimelineTreeCanvas from "./TimelineTreeCanvas";
+import { useEffect, useState } from "react";
 
-/* ============================================================
-   Animated floating particles — rendered on canvas for performance
-   ============================================================ */
-function ParticleCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+export default function Hero() {
+  const prefersReduced = useReducedMotion();
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    const particles: {
-      x: number; y: number; r: number;
-      vx: number; vy: number; alpha: number;
-    }[] = [];
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    // Spawn particles
-    for (let i = 0; i < 55; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 1.5 + 0.3,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.25,
-        alpha: Math.random() * 0.5 + 0.1,
-      });
-    }
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (const p of particles) {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(72, 213, 151, ${p.alpha})`;
-        ctx.fill();
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
-      }
-      animId = requestAnimationFrame(draw);
-    };
-    draw();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
+    setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      aria-hidden="true"
-      className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
-    />
-  );
-}
+  useEffect(() => {
+    if (isMobile || prefersReduced) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth) * 2 - 1;
+      const y = (e.clientY / window.innerHeight) * 2 - 1;
+      setMousePos({ x, y });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [isMobile, prefersReduced]);
 
-/* ============================================================
-   Hero Section
-   ============================================================ */
-export default function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-16">
-      {/* Particle field */}
-      <ParticleCanvas />
+    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-tva-base -mt-24">
 
-      {/* Radial glow behind text */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+      {/* ── Background Mechanism ── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 2 }}
+        className="absolute inset-0 z-0"
+        style={!isMobile ? {
+          transform: `translate(${mousePos.x * 15}px, ${mousePos.y * 15}px)`,
+        } : {}}
       >
-        <div className="w-[600px] h-[600px] rounded-full bg-green-loki/10 blur-[120px] animate-glow-pulse" />
+        <TimelineTreeCanvas />
+
+        {/* Temporal Loom Rings — hidden on small mobile */}
+        <div className="hidden sm:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center justify-center pointer-events-none mix-blend-screen opacity-30">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+            className="absolute w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full border border-tva-emerald/30 border-dashed"
+          />
+          <motion.div
+            animate={{ rotate: -360 }}
+            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+            className="absolute w-[350px] h-[350px] md:w-[500px] md:h-[500px] rounded-full border-2 border-tva-gold/15"
+          />
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="absolute w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full border border-tva-bright/30 border-dotted"
+          />
+        </div>
+      </motion.div>
+
+      {/* ── Main Content ── */}
+      <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 md:px-4 max-w-4xl mx-auto pt-32 pb-20">
+
+        {/* Intro flash text */}
+        <div className="h-10 mb-6 md:mb-10 flex flex-col items-center justify-center">
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="w-8 md:w-12 h-px bg-tva-bright mb-3 origin-center"
+          />
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 1, 0] }}
+            transition={{ duration: 2, delay: 0.8, times: [0, 0.2, 0.8, 1] }}
+            className="font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-tva-bright uppercase"
+          >
+            TIMELINE DETECTED
+          </motion.p>
+        </div>
+
+        {/* Status badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 3 }}
+          className="flex items-center gap-2 mb-6 font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-tva-amber border border-tva-amber/20 bg-tva-amber/5 px-3 md:px-4 py-1.5"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-tva-amber animate-pulse" />
+          TIMELINE STATUS: STABLE
+        </motion.div>
+
+        {/* Main Heading */}
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, delay: 3.2 }}
+          className="font-display font-black tracking-tighter uppercase leading-[0.9] mb-6 md:mb-8 text-4xl sm:text-6xl md:text-7xl lg:text-8xl"
+        >
+          <span className="text-tva-text">Welcome To</span>
+          <br />
+          <span className="text-tva-bright text-glow-emerald">My Timeline.</span>
+        </motion.h1>
+
+        {/* Subtext */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 4 }}
+          className="font-sans text-tva-muted text-base md:text-lg max-w-sm md:max-w-xl mx-auto mb-10 md:mb-14 leading-relaxed"
+        >
+          I build software, decode systems, and document the chaos in between.
+          You have entered another branch.
+        </motion.p>
+
+        {/* CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 4.5 }}
+          className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
+        >
+          <GlowButton href="/blog" variant="emerald" className="w-full sm:w-auto justify-center">
+            Enter The Archives
+          </GlowButton>
+          <GlowButton href="/write-your-mind" variant="ghost" className="w-full sm:w-auto justify-center">
+            Write Your Mind
+          </GlowButton>
+        </motion.div>
       </div>
 
-      {/* Decorative grid lines */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage:
-            "linear-gradient(#48D597 1px, transparent 1px), linear-gradient(90deg, #48D597 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
+      {/* ── Scroll Indicator (hidden on short screens) ── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 5.5 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-3"
+      >
+        <span className="font-mono text-[9px] tracking-widest text-tva-muted uppercase">Descend</span>
+        <div className="w-px h-10 bg-gradient-to-b from-tva-emerald to-transparent relative overflow-hidden">
+          <motion.div
+            animate={{ y: ["-100%", "100%"] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+            className="absolute top-0 left-0 w-full h-1/2 bg-tva-bright"
+          />
+        </div>
+      </motion.div>
+
+      {/* Corner deco */}
+      <motion.div
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 5, duration: 2 }}
+        className="absolute bottom-6 left-4 md:bottom-8 md:left-8 w-8 h-8 md:w-12 md:h-12 border-l border-b border-tva-emerald/30"
+      />
+      <motion.div
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 5, duration: 2 }}
+        className="absolute top-20 right-4 md:top-28 md:right-8 w-8 h-8 md:w-12 md:h-12 border-r border-t border-tva-amber/30"
       />
 
-      {/* ── Main content ── */}
-      <div className="relative z-10 container-site text-center flex flex-col items-center gap-6">
-        {/* Eyebrow */}
-        <div className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          <span className="eyebrow">Welcome to my universe</span>
-        </div>
-
-        {/* Stacked headline */}
-        <h1
-          className="font-display font-black leading-[0.95] tracking-tight animate-fade-in"
-          style={{ animationDelay: "0.25s", opacity: 0 }}
-        >
-          <span className="block text-6xl sm:text-8xl md:text-[9rem] text-text-primary">
-            THOUGHTS.
-          </span>
-          <span className="block text-6xl sm:text-8xl md:text-[9rem] text-gradient-green">
-            SYSTEMS.
-          </span>
-          <span className="block text-6xl sm:text-8xl md:text-[9rem] text-text-muted/60">
-            CHAOS.
-          </span>
-          <span className="block text-6xl sm:text-8xl md:text-[9rem] text-gradient-gold">
-            CREATION.
-          </span>
-        </h1>
-
-        {/* Sub text */}
-        <p
-          className="text-text-muted text-lg md:text-xl max-w-xl leading-relaxed animate-fade-in"
-          style={{ animationDelay: "0.55s", opacity: 0 }}
-        >
-          A digital space where I write about programming, AI, systems, and
-          everything I build along the way.
-        </p>
-
-        {/* CTA buttons */}
-        <div
-          className="flex flex-wrap items-center justify-center gap-4 mt-2 animate-fade-in"
-          style={{ animationDelay: "0.75s", opacity: 0 }}
-        >
-          <Link href="/blog" className="btn-primary px-8 py-3.5">
-            Explore Articles
-          </Link>
-          <Link href="/write-your-mind" className="btn-secondary px-8 py-3.5">
-            Write Your Mind Off
-          </Link>
-        </div>
-
-        {/* Scroll indicator */}
-        <div
-          className="mt-16 flex flex-col items-center gap-2 animate-float"
-          style={{ animationDelay: "1.2s" }}
-        >
-          <span className="text-text-muted/50 text-xs font-mono tracking-widest uppercase">
-            Scroll
-          </span>
-          <div className="w-px h-10 bg-gradient-to-b from-green-bright/60 to-transparent" />
-        </div>
-      </div>
-
-      {/* Bottom gradient fade into page */}
-      <div
-        aria-hidden="true"
-        className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-base to-transparent pointer-events-none"
-      />
     </section>
   );
 }

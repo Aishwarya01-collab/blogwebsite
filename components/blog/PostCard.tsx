@@ -32,12 +32,12 @@ export function FeaturedCard({
     <Link
       href={`/blog/${slug}`}
       className="group block relative overflow-hidden rounded-sm border border-border
-        bg-card-gradient transition-all duration-500
-        hover:border-border-bright hover:shadow-card-hover hover:-translate-y-1"
+        bg-card-gradient transition-all duration-700
+        hover:border-green-bright/60 hover:shadow-glow-green hover:-translate-y-2 hover:scale-[1.01]"
       aria-label={`Read featured article: ${title}`}
     >
       {/* Glow overlay on hover */}
-      <div className="absolute inset-0 bg-radial-green opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10" />
+      <div className="absolute inset-0 bg-radial-green opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-10" />
 
       <div className="flex flex-col lg:flex-row">
         {/* Cover image */}
@@ -47,15 +47,17 @@ export function FeaturedCard({
               src={coverImage}
               alt={title}
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              className="object-cover transition-transform duration-1000 group-hover:scale-[1.15] group-hover:-rotate-1"
               sizes="(max-width: 1024px) 100vw, 55vw"
               priority
             />
           ) : (
             /* Placeholder gradient when no image */
-            <div className="w-full h-full min-h-[240px] bg-gradient-to-br from-surface-raised to-surface flex items-center justify-center">
-              <div className="w-16 h-16 rounded-sm bg-green-loki/20 border border-green-loki/30 flex items-center justify-center">
-                <span className="text-green-bright/60 font-display text-2xl">✦</span>
+            <div className="w-full h-full min-h-[240px] bg-gradient-to-br from-surface-raised to-surface flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay pointer-events-none" />
+              <div className="absolute w-[400px] h-[400px] border border-green-bright/5 rounded-full animate-orbit-1" />
+              <div className="w-16 h-16 rounded-sm bg-green-loki/20 border border-green-loki/30 flex items-center justify-center group-hover:animate-time-slip transition-all duration-300">
+                <span className="text-green-bright/60 font-display text-2xl group-hover:text-green-bright">✦</span>
               </div>
             </div>
           )}
@@ -122,8 +124,8 @@ export default function PostCard({
     <Link
       href={`/blog/${slug}`}
       className="group flex flex-col overflow-hidden rounded-sm border border-border
-        bg-card-gradient transition-all duration-400 hover:border-border-bright
-        hover:shadow-card-hover hover:-translate-y-1.5 h-full"
+        bg-card-gradient transition-all duration-500 hover:border-green-bright/40
+        hover:shadow-glow-green hover:-translate-y-2 h-full relative z-10 hover:z-20"
       aria-label={`Read article: ${title}`}
     >
       {/* Cover image */}
@@ -133,19 +135,21 @@ export default function PostCard({
             src={coverImage}
             alt={title}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-surface-raised to-surface flex items-center justify-center">
-            <span className="text-green-bright/30 font-display text-4xl">✦</span>
+          <div className="w-full h-full bg-gradient-to-br from-surface-raised to-surface flex items-center justify-center relative overflow-hidden">
+             {/* Suble orbit effect inside placeholder */}
+            <div className="absolute w-[200px] h-[200px] border border-green-bright/5 rounded-full animate-orbit-1" />
+            <span className="text-green-bright/30 font-display text-4xl group-hover:animate-time-slip transition-all">✦</span>
           </div>
         )}
         {/* Top gradient for readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-surface/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-surface/90 to-transparent" />
 
         {/* Hover glow overlay */}
-        <div className="absolute inset-0 bg-green-loki/0 group-hover:bg-green-loki/10 transition-colors duration-400" />
+        <div className="absolute inset-0 bg-green-loki/0 group-hover:bg-green-loki/20 transition-colors duration-500 mix-blend-overlay" />
       </div>
 
       {/* Content */}
