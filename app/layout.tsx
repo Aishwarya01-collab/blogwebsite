@@ -5,6 +5,7 @@ import NavbarClient from "@/components/layout/NavbarClient";
 import Footer from "@/components/layout/Footer";
 import CustomCursor from "@/components/animations/CustomCursor";
 import { TimeTravelProvider } from "@/components/context/TimeTravelContext";
+import { TemporalEventNotification } from "@/components/ui/TemporalEventNotification";
 import "./globals.css";
 
 const cinzel = Cinzel({
@@ -40,6 +41,7 @@ export default function RootLayout({
         <TimeTravelProvider>
           <GlobalAtmosphere />
           <CustomCursor />
+          <TemporalEventNotification />
           <NavbarClient />
           {children}
           <Footer />

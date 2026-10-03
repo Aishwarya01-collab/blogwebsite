@@ -2,6 +2,8 @@ export const dynamic = "force-dynamic";
 
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { TimelineLink } from "@/components/ui/TimelineLink";
+import { GlowButton } from "@/components/ui/GlowButton";
 import { formatDate } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 
@@ -15,10 +17,7 @@ export default async function AdminPostsPage() {
     "use server";
     const id = formData.get("id") as string;
     const current = formData.get("published") === "true";
-    await prisma.post.update({
-      where: { id },
-      data: { published: !current },
-    });
+    await prisma.post.update({ where: { id }, data: { published: !current } });
     revalidatePath("/admin/posts");
   }
 
@@ -30,73 +29,89 @@ export default async function AdminPostsPage() {
   }
 
   return (
-    <div className="p-8 md:p-12">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-10">
+    <div className="flex flex-col gap-8">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 border-b border-tva-border/50 pb-8">
         <div>
-          <h1 className="font-display text-3xl font-bold text-text-primary mb-2">
-            Posts
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-1 h-1 rounded-full bg-tva-amber animate-pulse" />
+            <span className="font-mono text-[9px] tracking-[0.3em] text-tva-amber uppercase">Event Archive</span>
+          </div>
+          <h1 className="font-display text-3xl md:text-4xl font-black text-tva-text uppercase tracking-tight">
+            Timeline Events
           </h1>
-          <p className="text-text-muted">Manage your articles.</p>
+          <p className="font-mono text-[10px] text-tva-muted mt-2 tracking-widest uppercase">
+            {posts.length} events recorded across all branches
+          </p>
         </div>
-        <Link href="/admin/posts/new" className="btn-primary py-2.5 px-5 text-xs">
-          Create Post
-        </Link>
+        <GlowButton href="/admin/posts/new" variant="emerald">
+          + Log New Event
+        </GlowButton>
       </div>
 
-      <div className="glass-card rounded-sm overflow-hidden">
-        <table className="w-full text-left text-sm text-text-muted">
-          <thead className="bg-surface border-b border-border text-xs uppercase font-mono tracking-widest">
+      {/* Events Table */}
+      <div className="border border-tva-border/40 bg-tva-base overflow-hidden relative">
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-tva-emerald/40 to-transparent" />
+        
+        <table className="w-full text-left font-mono text-xs">
+          <thead className="border-b border-tva-border/40 bg-tva-surface/50">
             <tr>
-              <th className="px-6 py-4 font-medium text-text-primary">Title</th>
-              <th className="px-6 py-4 font-medium text-text-primary">Status</th>
-              <th className="px-6 py-4 font-medium text-text-primary">Category</th>
-              <th className="px-6 py-4 font-medium text-text-primary">Date</th>
-              <th className="px-6 py-4 font-medium text-text-primary text-right">Actions</th>
+              {["Event ID", "Title", "Status", "Branch", "Logged", "Actions"].map((h) => (
+                <th key={h} className="px-5 py-4 font-normal text-[9px] tracking-[0.2em] uppercase text-tva-muted">
+                  {h}
+                </th>
+              ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
-            {posts.map((post) => (
-              <tr key={post.id} className="hover:bg-surface/50 transition-colors">
-                <td className="px-6 py-4 text-text-primary font-medium max-w-xs truncate">
-                  {post.title}
-                </td>
-                <td className="px-6 py-4">
-                  <span className={`px-2.5 py-1 rounded-sm text-[10px] font-mono uppercase tracking-widest ${
-                    post.published ? "bg-green-loki/20 text-green-bright border border-green-loki/50" : "bg-base text-text-muted border border-border"
-                  }`}>
-                    {post.published ? "Published" : "Draft"}
-                  </span>
-                </td>
-                <td className="px-6 py-4 font-mono text-xs">{post.category?.name || "None"}</td>
-                <td className="px-6 py-4 font-mono text-xs">{formatDate(post.createdAt)}</td>
-                <td className="px-6 py-4 text-right">
-                  <div className="flex items-center justify-end gap-3">
-                    <Link href={`/admin/posts/${post.id}/edit`} className="text-text-muted hover:text-green-bright transition-colors font-mono text-xs tracking-widest uppercase">
-                      Edit
-                    </Link>
-                    <span className="text-border">|</span>
-                    <form action={togglePublish}>
-                      <input type="hidden" name="id" value={post.id} />
-                      <input type="hidden" name="published" value={post.published.toString()} />
-                      <button type="submit" className="text-text-muted hover:text-green-bright transition-colors font-mono text-xs tracking-widest uppercase">
-                        {post.published ? "Unpublish" : "Publish"}
-                      </button>
-                    </form>
-                    <span className="text-border">|</span>
-                    <form action={deletePost}>
-                      <input type="hidden" name="id" value={post.id} />
-                      <button type="submit" className="text-red-400 hover:text-red-300 transition-colors font-mono text-xs tracking-widest uppercase">
-                        Delete
-                      </button>
-                    </form>
-                  </div>
-                </td>
-              </tr>
-            ))}
+          <tbody>
+            {posts.map((post, i) => {
+              const eventId = `EVT-${post.id.replace(/\D/g, '').substring(0, 3).padEnd(3, '0')}`;
+              return (
+                <tr key={post.id} className="border-b border-tva-border/20 hover:bg-tva-surface/30 transition-colors group">
+                  <td className="px-5 py-4 text-tva-amber tracking-widest">{eventId}</td>
+                  <td className="px-5 py-4 text-tva-text font-medium max-w-[200px] truncate group-hover:text-tva-bright transition-colors">
+                    {post.title}
+                  </td>
+                  <td className="px-5 py-4">
+                    <span className={`px-2 py-1 text-[9px] uppercase tracking-widest border ${
+                      post.published
+                        ? "bg-tva-emerald/10 text-tva-bright border-tva-emerald/40"
+                        : "bg-tva-surface text-tva-muted border-tva-border/40"
+                    }`}>
+                      {post.published ? "ARCHIVED" : "DRAFT"}
+                    </span>
+                  </td>
+                  <td className="px-5 py-4 text-tva-muted">{post.category?.name || "—"}</td>
+                  <td className="px-5 py-4 text-tva-muted/70">{formatDate(post.createdAt)}</td>
+                  <td className="px-5 py-4">
+                    <div className="flex items-center gap-3 text-[9px] tracking-widest uppercase">
+                      <Link href={`/admin/posts/${post.id}/edit`} className="text-tva-muted hover:text-tva-bright transition-colors">
+                        Edit
+                      </Link>
+                      <span className="text-tva-border">|</span>
+                      <form action={togglePublish} className="inline">
+                        <input type="hidden" name="id" value={post.id} />
+                        <input type="hidden" name="published" value={post.published.toString()} />
+                        <button type="submit" className={`transition-colors ${post.published ? "text-tva-amber hover:text-tva-gold" : "text-tva-emerald hover:text-tva-bright"}`}>
+                          {post.published ? "Unpublish" : "Publish"}
+                        </button>
+                      </form>
+                      <span className="text-tva-border">|</span>
+                      <form action={deletePost} className="inline">
+                        <input type="hidden" name="id" value={post.id} />
+                        <button type="submit" className="text-red-900 hover:text-red-500 transition-colors">
+                          Prune
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
             {posts.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-6 py-8 text-center text-text-muted/60">
-                  No posts found. Start writing.
+                <td colSpan={6} className="px-5 py-12 text-center text-tva-muted/50 font-mono text-[10px] tracking-widest uppercase">
+                  No events logged. Begin recording.
                 </td>
               </tr>
             )}

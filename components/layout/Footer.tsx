@@ -11,10 +11,6 @@ const navLinks = [
   { href: "/about", label: "ABOUT" },
 ];
 
-const externalLinks = [
-  { href: "https://github.com", label: "GITHUB" },
-  { href: "https://linkedin.com", label: "LINKEDIN" },
-];
 
 export default function Footer() {
   return (
@@ -60,7 +56,7 @@ export default function Footer() {
         >
 
           {/* Nav links */}
-          <nav className="flex flex-wrap justify-center md:justify-start gap-x-8 gap-y-3">
+          <nav className="flex flex-wrap justify-center gap-x-8 gap-y-3 w-full">
             {navLinks.map(({ href, label }) => (
               <Link
                 key={href}
@@ -72,25 +68,6 @@ export default function Footer() {
               </Link>
             ))}
           </nav>
-
-          {/* Divider */}
-          <div className="hidden md:block h-10 w-[1px] bg-tva-border/40" />
-
-          {/* External links */}
-          <div className="flex items-center gap-6">
-            {externalLinks.map(({ href, label }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] text-tva-amber/60 hover:text-tva-amber transition-colors duration-300 uppercase"
-              >
-                <span className="w-1 h-1 rounded-full bg-tva-amber/40 group-hover:bg-tva-amber group-hover:shadow-[0_0_5px_rgba(196,154,69,0.8)] transition-all" />
-                {label}
-              </a>
-            ))}
-          </div>
         </motion.div>
 
         {/* ── Bottom: System Status Bar ── */}
