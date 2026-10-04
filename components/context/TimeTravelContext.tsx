@@ -17,6 +17,15 @@ export function TimeTravelProvider({ children }: { children: ReactNode }) {
   const navigateWithTransition = useCallback((href: string) => {
     setIsTransitioning(true);
     
+    // Play time travel sound effect
+    try {
+      const audio = new Audio("/sounds/time-travel.mp3");
+      audio.volume = 0.5;
+      audio.play().catch(e => console.log("Audio playback prevented by browser:", e));
+    } catch (e) {
+      // Ignore audio errors
+    }
+    
     // Halfway through the animation, change the route
     setTimeout(() => {
       router.push(href);

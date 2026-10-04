@@ -20,6 +20,22 @@ export function GlowButton({ href, onClick, children, variant = "emerald", class
     ghost: "text-tva-muted hover:text-tva-text hover:bg-tva-surface"
   };
 
+  const playHoverSound = () => {
+    try {
+      const audio = new Audio("/sounds/hover.mp3");
+      audio.volume = 0.2;
+      audio.play().catch(() => {});
+    } catch (e) {}
+  };
+
+  const playClickSound = () => {
+    try {
+      const audio = new Audio("/sounds/click.mp3");
+      audio.volume = 0.3;
+      audio.play().catch(() => {});
+    } catch (e) {}
+  };
+
   const Content = () => (
     <>
       <span className="relative z-10 flex items-center gap-2 transition-transform duration-300 group-hover:-translate-y-0.5">
@@ -44,16 +60,30 @@ export function GlowButton({ href, onClick, children, variant = "emerald", class
     </>
   );
 
+  const handleBtnClick = () => {
+    playClickSound();
+    if (onClick) onClick();
+  };
+
   if (href) {
     return (
-      <TimelineLink href={href} className={cn(baseClasses, variants[variant], className)}>
+      <TimelineLink 
+        href={href} 
+        className={cn(baseClasses, variants[variant], className)}
+        onMouseEnter={playHoverSound}
+        onClick={playClickSound}
+      >
         <Content />
       </TimelineLink>
     );
   }
 
   return (
-    <button onClick={onClick} className={cn(baseClasses, variants[variant], className)}>
+    <button 
+      onClick={handleBtnClick} 
+      onMouseEnter={playHoverSound}
+      className={cn(baseClasses, variants[variant], className)}
+    >
       <Content />
     </button>
   );
