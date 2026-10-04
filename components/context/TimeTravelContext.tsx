@@ -21,8 +21,8 @@ export function TimeTravelProvider({ children }: { children: ReactNode }) {
     try {
       const audio = new Audio("/sounds/time-travel.mp3");
       audio.volume = 0.5;
-      audio.play().catch(e => console.log("Audio playback prevented by browser:", e));
-    } catch (e) {
+      audio.play().catch(console.log);
+    } catch {
       // Ignore audio errors
     }
     

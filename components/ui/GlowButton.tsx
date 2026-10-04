@@ -25,7 +25,7 @@ export function GlowButton({ href, onClick, children, variant = "emerald", class
       const audio = new Audio("/sounds/hover.mp3");
       audio.volume = 0.2;
       audio.play().catch(() => {});
-    } catch (e) {}
+    } catch {}
   };
 
   const playClickSound = () => {
@@ -33,7 +33,7 @@ export function GlowButton({ href, onClick, children, variant = "emerald", class
       const audio = new Audio("/sounds/click.mp3");
       audio.volume = 0.3;
       audio.play().catch(() => {});
-    } catch (e) {}
+    } catch {}
   };
 
   const Content = () => (
