@@ -2,7 +2,6 @@ export const dynamic = "force-dynamic";
 
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { TimelineLink } from "@/components/ui/TimelineLink";
 import { GlowButton } from "@/components/ui/GlowButton";
 import { formatDate } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
@@ -64,7 +63,7 @@ export default async function AdminPostsPage() {
             </tr>
           </thead>
           <tbody>
-            {posts.map((post, i) => {
+            {posts.map((post) => {
               const eventId = `EVT-${post.id.replace(/\D/g, '').substring(0, 3).padEnd(3, '0')}`;
               return (
                 <tr key={post.id} className="border-b border-tva-border/20 hover:bg-tva-surface/30 transition-colors group">

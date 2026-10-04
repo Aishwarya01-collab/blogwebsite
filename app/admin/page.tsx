@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 
 import { prisma } from "@/lib/prisma";
-import { TimelineLink } from "@/components/ui/TimelineLink";
 import { GlowButton } from "@/components/ui/GlowButton";
 
 export default async function AdminDashboard() {

@@ -30,7 +30,7 @@ export function GlobalAtmosphere() {
         <motion.div
           className="absolute inset-0 bg-[radial-gradient(circle_at_var(--mouse-x)_var(--mouse-y),_rgba(29,107,69,0.08)_0%,_transparent_40%)]"
           style={{
-            //@ts-ignore
+            //@ts-expect-error -- CSS custom properties not in CSSProperties type
             "--mouse-x": `${mousePosition.x}px`,
             "--mouse-y": `${mousePosition.y}px`,
           }}

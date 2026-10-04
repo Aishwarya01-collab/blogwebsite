@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { logoutAction } from "@/actions/auth";
 import { TimelineLink } from "@/components/ui/TimelineLink";
-import { GlobalAtmosphere } from "@/components/ui/global-atmosphere";
+
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
@@ -61,7 +61,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             { label: "Branch Categories", href: "/admin/categories", icon: "◇" },
             { label: "Variant Comm", href: "/admin/comments", icon: "◉" },
             { label: "Mind Fragments", href: "/admin/minds", icon: "◎" },
-          ].map((item, i) => (
+          ].map((item) => (
             <TimelineLink
               key={item.href}
               href={item.href}

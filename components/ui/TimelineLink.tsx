@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useTimeTravel } from "@/components/context/TimeTravelContext";
 import { ReactNode } from "react";
 
@@ -9,7 +8,9 @@ interface TimelineLinkProps {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
-  [key: string]: any;
+  style?: React.CSSProperties;
+  "data-article"?: string;
+  [key: string]: unknown;
 }
 
 export function TimelineLink({ href, children, className, onClick, ...props }: TimelineLinkProps) {

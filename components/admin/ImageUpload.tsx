@@ -10,8 +10,10 @@ interface ImageUploadProps {
 export default function ImageUpload({ defaultValue }: ImageUploadProps) {
   const [imageUrl, setImageUrl] = useState(defaultValue || "");
 
-  const onUpload = (result: any) => {
-    setImageUrl(result.info.secure_url);
+  const onUpload = (result: { info?: { secure_url?: string } }) => {
+    if (result?.info?.secure_url) {
+      setImageUrl(result.info.secure_url);
+    }
   };
 
   return (
