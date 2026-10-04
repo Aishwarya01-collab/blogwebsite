@@ -11,16 +11,18 @@ interface ArchiveCardProps {
   category: string;
   slug: string;
   variant?: "vertical" | "compact";
+  className?: string;
 }
 
-export function ArchiveCard({ id, title, excerpt, date, category, slug, variant = "vertical" }: ArchiveCardProps) {
+export function ArchiveCard({ id, title, excerpt, date, category, slug, variant = "vertical", className }: ArchiveCardProps) {
   return (
     <Link 
       href={`/blog/${slug}`} 
       data-article="true"
       className={cn(
         "group relative flex flex-col border border-tva-border/40 bg-tva-surface/50 hover:bg-tva-surface p-6 rounded-sm overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:border-tva-emerald/30",
-        variant === "compact" && "p-4"
+        variant === "compact" && "p-4",
+        className
       )}
     >
       
